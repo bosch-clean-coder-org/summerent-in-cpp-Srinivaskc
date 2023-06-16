@@ -1,9 +1,12 @@
 #include "typewise-alert.h"
 
+std::map<CoolingType, int> TemperatureUpperLimit{{PASSIVE_COOLING, 35}, {HI_ACTIVE_COOLING, 45}, {MED_ACTIVE_COOLING, 40}};
+std::map<BreachType, std::string> TemperatureStatusList {{NORMAL,"Normal"},{TOO_LOW,"Temperature too low"},{TOO_HIGH,"Temperature too high"}};
+
 BreachType CheckLowLimit(double value, double lowerLimit)
 {
   BreachType retBreachType = NORMAL;
-  //retBreachType = (BreachType)(value < lowerLimit);
+  
   if (value < lowerLimit)
   {
     retBreachType = TOO_LOW;
@@ -24,10 +27,13 @@ BreachType CheckHighLimit(double value, double upperLimit)
 BreachType inferBreach(double value, double lowerLimit, double upperLimit)
 {
   BreachType retBreachType = NORMAL;
-  retBreachType = CheckLowLimit(value,lowerLimit);
-  retBreachType = CheckHighLimit(value,upperLimit);
+   if(TOO_LOW == CheckLowLimit(value,lowerLimit))
+   {
+       return TOO_LOW;
+   }
+   retBreachType = CheckHighLimit(value,upperLimit);
 
-  return retBreachType;
+   return retBreachType;
 }
 int GetUpperLimit(CoolingType coolingType)
 {  
@@ -66,9 +72,8 @@ void sendToController(BreachType breachType) {
   printf("%x : %x\n", header, breachType);
 }
 
-
 void sendToEmail(BreachType breachType) {
   const char* recepient = "a.b@c.com";
   printf("To: %s\n", recepient);
-  printf("%s\n",TemperatureStatusList[breachType]); 
+  std::cout<<TemperatureStatusList[breachType]<<std::endl;
 }
