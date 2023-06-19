@@ -61,6 +61,7 @@ void checkAndAlert(
   if (alertTarget)
   {
     sendToEmail(breachType);
+    
     return;
   }
   sendToController(breachType);
